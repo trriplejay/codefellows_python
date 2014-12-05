@@ -2,14 +2,23 @@
 python 3.0
 library.py
 
+author: John Stockbauer
+codefellows python challenge part 1
+
 description:
 This file contains the objects necessary to model a library, which includes
-'library', 'shelf', and 'book'
+'Library', 'Shelf', and 'Book'
 
 """
-import unittest
+# used for library objects
 import functools
 import bisect
+from operator import attrgetter
+
+# used for unittest
+import unittest
+import types
+
 
 
 class Library():
@@ -17,13 +26,13 @@ class Library():
 	A container for shelves. Shelves contain books.
 
 	A library contains the following attributes:
-	  shelves - dictionary of shelves in the library
+	  shelves - list of shelves in the library
 
 	Also contains the following methods:
-	  list_books - show all books in the library, or all books in a category
+	  list_books - build a list of all books in the library, return a generator that produces them
 	  print_books - print all books, one shelf at a time
 	  checkout - remove a book from its shelf
-	  return - put a book back on a shelf
+	  book_return - put a book back on a shelf
 	""" 
 	def __init__(self):
 		self.shelves = list()
@@ -43,16 +52,37 @@ class Library():
 	def shelf_count(self):
 		return len(self.shelves)
 
-	def print_books(self, sname=None):
+	def list_books(self, shelf=None):
+		"""
+		generates a list of all books in library, or all books from a specific shelf
+		"""
+		for ashelf in self.shelves:
+			if shelf is not None and shelf == ashelf:
+				for book in ashelf.books:
+					yield book
+			elif shelf is None:
+				for book in ashelf.books:
+					yield book
+
+	def print_books(self, sname=None, sort_by=None):
 		"""
 		prints all books in the library, or prints all books
 		contained by the shelf with the specified name
+		sort the books in each self based on sort_by:
+		  author(default)
+		  title
+		  isbn
 		"""
+		print("The library contains the following books:")
 		for shelf in self.shelves:
-
-			if shelf.name is not None:
-				print("Shelf %s:" % shelf.name)
-			shelf.print_books()
+			if sname is not None:
+				if shelf.name == sname:
+					print("'%s' Shelf:" % shelf.name)
+					shelf.print_books(sort_by=sort_by)
+			else:
+				if shelf.name is not None:
+					print("\n'%s' Shelf:" % shelf.name)
+				shelf.print_books(sort_by=sort_by)
 	def checkout(self, book):
 		book.unshelf()
 
@@ -62,24 +92,27 @@ class Library():
 
 class Shelf():
 	"""
-	A container for books.  A shelf is defined mainly by its genre.
+	A container for books.  Multiple shelves can be differentiated by giving them a name.
 	A shelf contains the following attributes:
 	  name - an optional argument to give the shelf a name
 	  books - a list of books sitting on the shelf
 	Also contains the following methods:
 	  print_books - prints a formatted list of books on the shelf
-	  add_book - put a book on the shelf
-	  remove_book - take a book off the shelf
+	  add_book - put a book on the shelf. called by Book method "enshelf"
+	  remove_book - take a book off the shelf. called by Book method "unshelf"
 
 	"""
 	def __init__(self, name=None):
+		# giving a shelf a name is an optional way to add organization
 		self.name = name
+		# initialize the list of books that the shelf will hold
 		self.books = list()
 
 	def print_books(self, sort_by=None):
 		"""
 		sort books, then print them in a formatted list
-		sort options are: title, author
+		sort options are: title, author, isbn
+		default sort is author->title
 		"""
 		if sort_by is not None:
 			if sort_by.lower() == "author":
@@ -92,21 +125,23 @@ class Shelf():
 			
 
 			for book in sorted_books:
-				print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))
+				print(book)
+				#print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))
 		else:
 			for book in self.books:
-				print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))	
+				print(book)
+				#print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))	
 
 
 	def add_book(self, book):
-		
 		# keep books sorted by author as they are added, just like on actual library shelves
+		# how to compare books is defined in the book object
 		bisect.insort_left(self.books, book)
 
 	def remove_book(self, book):
 		# rather than doing a remove, which will perform linear search of the list
 		# for the desired element, we'll use bisect to do a binary search, find the index
-		# of the desired element, then delete it manually
+		# of the desired element, then delete it. This will save some time if our list is long.
 		index = bisect.bisect_left(self.books, book)
 		# make sure the book was in the list
 		if(index != len(self.books) and self.books[index] == book):
@@ -139,6 +174,10 @@ class Book():
 		return ((self.author.lower(), self.title.lower()) < 
 			(other.author.lower(), other.title.lower()))
 
+	def __str__(self):
+		# define what will happen when someone calls print on a book object
+		return ("%s: \'%s\', %s" % (self.author, self.title, self.isbn))
+
 	def enshelf(self, newshelf):
 		"""
 		Add this book to the provided shelf.
@@ -170,6 +209,13 @@ class Book():
 
 
 class TestLibrary(unittest.TestCase):
+	"""
+	contains unit tests for the 3 main objects that make up a library:
+	  book
+	  shelf
+	  library
+	test all functionality except for printing
+	"""
 
 	def setUp(self):
 		self.library = Library()
@@ -199,8 +245,6 @@ class TestLibrary(unittest.TestCase):
 		self.book1.enshelf(self.shelfA)
 		self.assertEqual(len(self.shelfA.books), count)
 
-		# TEST PRINT
-		self.shelfA.print_books()
 		# verify initial length of shelfB
 		self.assertEqual(len(self.shelfB.books), 0)
 		# enshelf a book on B that is already on A
@@ -240,10 +284,95 @@ class TestLibrary(unittest.TestCase):
 		self.assertEqual(self.library.book_count(), 4)	
 		self.assertEqual(self.library.shelf_count(), 2)
 
-		self.library.print_books()
+		self.assertEqual(type(self.library.list_books()), types.GeneratorType)
 
 
 if __name__ == '__main__':
 
-	unittest.main()
+	# uncomment to perform unittest
+	# unittest does not cover methods that print to the console
+	#unittest.main()
 	
+	# step by step exampes of all functionality described in the challenge
+	library = Library()
+	shelfA = Shelf()
+	shelfB = Shelf()
+	book1 = Book(author="Vonnegut, Kurt", title="Slaughterhouse 5", ISBN=12345)
+	book2 = Book(author="Heller, Joseph", title="Catch 22", ISBN=54321)
+	book3 = Book(author="King, Stephen", title="Gunslinger", ISBN=22333)
+	book4 = Book(author="King, Stephen", title="The Drawing of the Three", ISBN=22334)
+	book_list = [book1, book2, book3, book4]
+
+	# perform some actions and print strings to describe whats happening
+	print()
+	print("length of shelfA: %s" % len(shelfA.books))
+	print()
+	print("adding 4 books to shelfA...")
+	for book in book_list:
+		book.enshelf(shelfA)
+	print()
+	print("shelfA now contains:")
+	shelfA.print_books()
+	print()
+	print("remove Gunslinger from the shelf and reprint shelf:")
+	book3.unshelf()
+	print()
+	shelfA.print_books()
+	print()
+	print("take the other King book, enshelf it to shelfB, print shelfB, then shelfA")
+	print()
+	book4.enshelf(shelfB)
+	print("shelfB contains:")
+	shelfB.print_books()
+	print()
+	print("shelfA contains:")
+	shelfA.print_books()
+	print()
+	print("enshelf Gunslinger on shelfB")
+	print()
+	book3.enshelf(shelfB)
+	print("shelfB:")
+	shelfB.print_books()
+
+	print()
+	print("Perform library functions...")
+	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
+	print()
+	print("add shelfA to library and print library")
+	library.add_shelf(shelfA)
+	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
+	print()
+	library.print_books()
+	print()
+	print("add shelfB to library and print library")
+	library.add_shelf(shelfB)
+	print()
+	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
+	print()
+	library.print_books()
+	print()
+	print("give names to both shelves and print library agian")
+	shelfA.name = "Classic Literature"
+	shelfB.name = "Fantasy"
+	print()
+	library.print_books()
+	print()
+	print("sort books by ISBN and print again")
+	library.print_books(sort_by='isbn')
+	print()
+	print("print the list of books that is returned from list_books method")
+	print()
+	booklist = library.list_books()
+	print("list_books should give us a generator:")
+	print(booklist)
+	print()
+	print("iterate over the generator to print a list of books:")
+	for book in booklist:
+		print(book)
+	print()
+	print("print just the books in shelfA via list_books")
+	booklist = library.list_books(shelf=shelfA)
+	print("the generator: " + str(booklist))
+	for book in booklist:
+		print(book)
+
