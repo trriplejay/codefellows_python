@@ -1,5 +1,5 @@
 """
-python 3.0
+python 2.7
 library.py
 
 author: John Stockbauer
@@ -21,7 +21,7 @@ import types
 
 
 
-class Library():
+class Library(object):
 	"""
 	A container for shelves. Shelves contain books.
 
@@ -73,15 +73,15 @@ class Library():
 		  title
 		  isbn
 		"""
-		print("The library contains the following books:")
+		print "The library contains the following books:"
 		for shelf in self.shelves:
 			if sname is not None:
 				if shelf.name == sname:
-					print("'%s' Shelf:" % shelf.name)
+					print "'%s' Shelf:" % shelf.name 
 					shelf.print_books(sort_by=sort_by)
 			else:
 				if shelf.name is not None:
-					print("\n'%s' Shelf:" % shelf.name)
+					print "\n'%s' Shelf:" % shelf.name
 				shelf.print_books(sort_by=sort_by)
 	def checkout(self, book):
 		book.unshelf()
@@ -90,7 +90,7 @@ class Library():
 		book.enshelf(shelf)
 
 
-class Shelf():
+class Shelf(object):
 	"""
 	A container for books.  Multiple shelves can be differentiated by giving them a name.
 	A shelf contains the following attributes:
@@ -125,11 +125,11 @@ class Shelf():
 			
 
 			for book in sorted_books:
-				print(book)
+				print book
 				#print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))
 		else:
 			for book in self.books:
-				print(book)
+				print book
 				#print("%s: \'%s\', %s" % (book.author, book.title, book.isbn))	
 
 
@@ -148,7 +148,7 @@ class Shelf():
 			self.books.pop(index)
 
 @functools.total_ordering
-class Book():
+class Book(object):
 	"""
 	A book is an object with the following attributes:
 	  author - author of the book ("lastname, firstname")
@@ -304,72 +304,71 @@ if __name__ == '__main__':
 	book_list = [book1, book2, book3, book4]
 
 	# perform some actions and print strings to describe whats happening
-	print()
+	print
 	print("length of shelfA: %s" % len(shelfA.books))
-	print()
+	print
 	print("adding 4 books to shelfA...")
 	for book in book_list:
 		book.enshelf(shelfA)
-	print()
+	print
 	print("shelfA now contains:")
 	shelfA.print_books()
-	print()
+	print
 	print("remove Gunslinger from the shelf and reprint shelf:")
 	book3.unshelf()
-	print()
+	print
 	shelfA.print_books()
-	print()
+	print
 	print("take the other King book, enshelf it to shelfB, print shelfB, then shelfA")
-	print()
+	print
 	book4.enshelf(shelfB)
 	print("shelfB contains:")
 	shelfB.print_books()
-	print()
+	print
 	print("shelfA contains:")
 	shelfA.print_books()
-	print()
+	print
 	print("enshelf Gunslinger on shelfB")
-	print()
+	print
 	book3.enshelf(shelfB)
 	print("shelfB:")
 	shelfB.print_books()
 
-	print()
+	print
 	print("Perform library functions...")
 	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
-	print()
+	print
 	print("add shelfA to library and print library")
 	library.add_shelf(shelfA)
 	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
-	print()
+	print
 	library.print_books()
-	print()
+	print
 	print("add shelfB to library and print library")
 	library.add_shelf(shelfB)
-	print()
 	print("the library currently contains *%s* shelves and *%s* books." % (library.shelf_count(), library.book_count()))
-	print()
+	print
 	library.print_books()
-	print()
+	print
 	print("give names to both shelves and print library agian")
 	shelfA.name = "Classic Literature"
 	shelfB.name = "Fantasy"
-	print()
+	print
 	library.print_books()
-	print()
+	print
 	print("sort books by ISBN and print again")
 	library.print_books(sort_by='isbn')
-	print()
+	print
 	print("print the list of books that is returned from list_books method")
-	print()
+	print
 	booklist = library.list_books()
 	print("list_books should give us a generator:")
 	print(booklist)
-	print()
-	print("iterate over the generator to print a list of books:")
+	print
+	print("Iterate over the generator to print a list of books:")
 	for book in booklist:
 		print(book)
-	print()
+	print
 	print("print just the books in shelfA via list_books")
 	booklist = library.list_books(shelf=shelfA)
 	print("the generator: " + str(booklist))
