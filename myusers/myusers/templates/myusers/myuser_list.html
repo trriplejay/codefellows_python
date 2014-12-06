@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block page_title %} List of Users | {% endblock %}
+
+{% block page_content %}
+
+	<div class='row'>
+	  <div class='col-sm-6 col-sm-offset-3'>
+	    <center>
+	    <h2>Current Users:
+	    <a class='btn btn-primary btn-md' href="{% url 'create' %}"><b>C</b>reate a new user</a>
+	    </h2>
+	    </center>
+	  </div>
+	</div>
+	<div class='container well'>
+		<ul class='list-unstyled'>
+		  {% for theuser in myuser_list %}
+			<div class='row'>
+		      <li>
+		        
+		        <div class='col-sm-4 col-sm-offset-2'>
+		        
+		          
+		          <p style='padding: 10px'>{{ theuser.get_full_name }} ({{theuser.email}})</p>
+		          
+		        
+		        </div>
+		        
+		        <div class='col-sm-5'>
+		        <ul class='nav nav-pills' role='tablist'>
+		          <li role='presentation'><a href="{{ theuser.get_absolute_url }}"><b>R</b>etrieve</a></li>
+		        
+		        
+		          <li role='presentation'><a href="{% url 'update' theuser.pk %}"><b>U</b>pdate</a></li>
+		        
+		        
+		          <li role='presentation'><a href="{% url 'destroy' theuser.pk %}"><b>D</b>estroy</a></li>
+		        
+		      </li>
+		    </div>
+		    <br>
+		  
+		  {% empty %}
+		    <li>No one is here yet....</li>
+		  {% endfor %}
+		</ul>
+	</div>
+	
+
+{% endblock %}

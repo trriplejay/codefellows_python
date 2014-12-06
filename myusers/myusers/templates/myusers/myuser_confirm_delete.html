@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %} List of Users | {% endblock %}
+
+{% block page_content %}
+  <div class='col-sm-6 col-sm-offset-3'>
+
+    <form action="" method="post" class='well'>{% csrf_token %}
+      <h4>Are you sure you want to delete "{{ myuser.get_full_name }}"?</h4>
+      <br>
+    <input type="submit" class='btn btn-primary btn-block' value="Confirm" />
+    <a href="{% url 'list' %}" class='btn btn-default btn-block'>Cancel</a>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block page_title %} List of Users | {% endblock %}
+
+{% block page_content %}
+  <div class='col-sm-7 col-sm-offset-3'>
+
+  <form action="" method="post" class='well'>
+    <legend>Now editing the profile of {{myuser.get_full_name}}</legend>
+    <p><i>* indicates required field</i></p>
+    {% csrf_token %}
+    <div class=fieldWrapper>
+      {% for field in form %}
+      {% if field.errors %}
+        <div class='field-error' for='errors'>
+        {{ field.errors }}
+        </div>
+      {% endif %}
+        <div class="control-label" for="{{ field.auto_id }}">
+          {{ field.label_tag }}
+          {% if field.field.required %}
+            <span class='special_class'>*</span>
+          {% endif %}
+        </div>
+        <div class='controls'>
+          {{ field }}
+        </div>
+        <br>
+      {% endfor %}
+    </div>
+    <input class='btn btn-primary btn-md' type='submit' name='submit' value='save changes' />
+    <a class='btn btn-default btn-md' href="{% url 'detail' myuser.id %}">Cancel changes</a>
+  </form>
+  </div>
+
+{% endblock %}

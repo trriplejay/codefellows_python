@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_title %}Profile for {{ myuser.first_name }} | {% endblock %}
+
+{% block page_content %}
+
+  <div class='row'>
+  <div class='col-sm-6 col-sm-offset-3'>
+  <center>
+  <h3>{{myuser.get_full_name}}'s Profile</h3>
+  </center>
+  
+  </div>
+  </div>
+  <div class='row '>
+    <div class='col-sm-6 col-sm-offset-3 well'>
+      <ul class='list-unstyled'>
+      <li>Email address: {{myuser.email}}</li>
+      <li>First name: {{myuser.first_name}}</li>
+      <li>Last name: {{myuser.last_name}}</li>
+      <li>Date joined: {{myuser.date_joined}}</li>
+      </ul>
+
+      <a class='btn btn-primary btn-block' href="{% url 'update' myuser.id %}">Edit Profile</a>
+      <a class='btn btn-default btn-block' href="{% url 'list' %}">Back to list</a>
+    </div>
+  </div>
+  
+{% endblock %}

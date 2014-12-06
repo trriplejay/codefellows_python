@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>{% block page_title %}{% endblock %}MyUsers</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+		<link rel='icon' type='image/png' href='{{ STATIC_URL }}images/glyphicons-44-group.png'>
+	</head>
+
+	<body>
+	<div class='navbar navbar-default'>
+	  <div class='container'>
+	    <div class='navbar-header'>
+	      <button class='navbar-toggle collapsed' data-toggle='collapse' data-target='.navHeaderCollapse'>
+	        <span class='icon-bar'></span>
+	        <span class='icon-bar'></span>
+	        <span class='icon-bar'></span>
+	      </button>
+	      <a class='navbar-brand' href="{% url 'home' %}">MyUsers</a>
+	    </div>
+	    <div class='collapse navbar-collapse navHeaderCollapse'>
+	      <ul class='nav navbar-nav navbar-right'>
+	      <li role="presentation" 
+	        {% if "create" in request.path %}class="active"{% endif %}>
+	        <a>C</a>
+	      </li>
+          <li role="presentation"
+            {% if "retrieve" in request.path %}class="active"{% endif %}>
+            <a>R</a>
+          </li>
+          <li role="presentation"
+		    {% if "update" in request.path %}class="active"{% endif %}>
+            <a>U</a>
+          </li>
+          <li role="presentation"
+            {% if "destroy" in request.path %}class="active"{% endif %}>
+            <a>D</a>
+          </li>
+	      </ul>
+	    </div>
+	</div>
+	</div>
+
+	
+	<div class='container'>
+	  {% block page_content %}{% endblock %}
+	</div>
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+	</div>
+
+	</body>
+
+</html>

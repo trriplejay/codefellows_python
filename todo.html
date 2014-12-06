@@ -16,7 +16,7 @@
   	    <ol id="todo-list"></ol>
 
   	    <form id='add-item' >
-  	      <input type='text' class='form-control' id='newtask' required autofocus placeholder="type a new task and press 'enter'" autocomplete='off'/>
+  	      <input type='text' class='form-control' id='newtask' required autofocus placeholder="type a new task" autocomplete='off'/>
   	      <input class='btn btn-primary btn-block' type='submit' id='button' value='add'/>
   	    </form>
   	  </center>
@@ -37,6 +37,7 @@
   	
   	    $("#todo-list").prepend(newtask);
   	    $('#newtask').val('');
+        $('#newtask').focus();
       });
     });
   </script>
