@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block page_title %}Login | {% endblock %}
+
+{% block page_content %}
+
+  <div class='col-sm-6 col-sm-offset-2'>
+    <div class='well'>
+      <legend>Sign in</legend>
+      {% if user.is_authenticated %}
+        <h3>already logged in!</h3>
+      {% else %}
+
+      {% if form.errors %}
+      <p>You username and password didn't match. Please try again.</p>
+      {% endif %}
+      <div id='login'>
+        <form class='form-horizontal' name='LoginForm' action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+
+        <div class='control-group'>
+          <label class='control-label' for='username'>{{form.username.label_tag}}</label>
+          <div class='controls'>
+            {{form.username}}
+          </div>
+        </div>
+        <div class='control-group'>
+          <label class='control-label' for='username'>{{form.password.label_tag}}</label>
+          <div class='controls'>
+            {{form.password}}
+          </div>
+        </div>
+        <br>
+        <div class='control-group'>
+          <div class='controls'>          
+            <button class='btn btn-primary' type='submit'>login</button>
+            <input type='hidden' name='next' value='{{next}}' />
+            <a class='btn btn-default' href="{% url 'list' %}">cancel</a>
+            <h4>not registered?</h4>
+            <a class='btn btn-success' href="{% url 'create' %}">sign up</a>
+          </div>
+        </div>
+        </form>
+        <script>document.getElementById("id_username").focus();</script>
+      {% endif %}  
+    </div>
+  </div>
+
+{% endblock %}

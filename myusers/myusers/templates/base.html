@@ -8,7 +8,7 @@
 		<link rel='icon' type='image/png' href='{{ STATIC_URL }}images/glyphicons-44-group.png'>
 	</head>
 
-	<body>
+	<body style='background-color:#CCCCCC'>
 	<div class='navbar navbar-default'>
 	  <div class='container'>
 	    <div class='navbar-header'>
@@ -26,17 +26,36 @@
 	        <a>C</a>
 	      </li>
           <li role="presentation"
-            {% if "retrieve" in request.path %}class="active"{% endif %}>
+            {% if "read" in request.path %}class="active"{% endif %}>
             <a>R</a>
           </li>
           <li role="presentation"
-		    {% if "update" in request.path %}class="active"{% endif %}>
+		    {% if "update" in request.path or "password" in request.path %}class="active"{% endif %}>
             <a>U</a>
           </li>
           <li role="presentation"
             {% if "destroy" in request.path %}class="active"{% endif %}>
             <a>D</a>
           </li>
+          {% if user.is_anonymous %}
+          <li
+            {% if "create" in request.path %}class='active'{% endif %}
+            ><a href="{% url 'create' %}">sign up</a></li>
+          <li
+            {% if "login" in request.path %}class='active'{% endif %}
+            ><a href="{% url 'login' %}">login</a></li>
+          {% else %}
+            <li class='dropdown'>
+              <a href='#' class='dropdown-toggle' data-toggle='dropdown'>{{ user }}<b class='caret'></b></a>
+              <ul class='dropdown-menu'>
+                <li><a href="{% url 'detail' user.id %}">profile</a></li>
+                <li><a href="{% url 'password_change' %}">change password</a></li>
+                <li><a href="{% url 'logout' %}">logout</a></li>
+              </ul>
+            </li>
+          {% endif %}
+
+
 	      </ul>
 	    </div>
 	</div>

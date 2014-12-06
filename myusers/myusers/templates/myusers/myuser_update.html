@@ -28,8 +28,9 @@
         <br>
       {% endfor %}
     </div>
-    <input class='btn btn-primary btn-md' type='submit' name='submit' value='save changes' />
-    <a class='btn btn-default btn-md' href="{% url 'detail' myuser.id %}">Cancel changes</a>
+    <input class='btn btn-primary btn-block' type='submit' name='submit' value='save changes' />
+    <a class='btn btn-default btn-block' href="{% url 'detail' myuser.id %}">back to profile</a>
+    <a class='btn btn-default btn-block' href="{% url 'list' %}">back to user list</a>
   </form>
   </div>
 

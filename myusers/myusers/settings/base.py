@@ -66,6 +66,10 @@ ROOT_URLCONF = 'myusers.urls'
 
 WSGI_APPLICATION = 'myusers.wsgi.application'
 
+from django.core.urlresolvers import reverse_lazy
+LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = reverse_lazy('list')
+LOGOUT_URL = reverse_lazy('home')
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
